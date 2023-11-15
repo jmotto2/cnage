@@ -15,11 +15,11 @@ import os
 
 # read in the dr17 file
 with fits.open('/scratch/jotto/sdssIV/allStar-dr17-synspec_rev1.fits') as hdul:
-    hdul.info()
+    # hdul.info()
     dr17 = hdul[1].data
 
 
-#CLEAN THE DATA UP! Removing bad bits and -9999 values for APOGEE. Grabbing only cluster members from OCCAM.
+# CLEAN THE DATA UP! Removing bad bits and -9999 values for APOGEE. Grabbing only cluster members from OCCAM.
 # TWO BITWISE FLAGS FOR BAD DATA             
 badbits = 2**23        # aspcapstar flag - Chemistry
 suspectbits = 2**16    # star flag - Stellar parameters
@@ -42,5 +42,34 @@ indices1 = np.where(np.logical_and(gd,teff_logg_feh_check), evol_cut, C_N_check)
 #cleaned allstar date. no -9999 values
 good_apo = dr17[indices1]
 
-print(len(dr17), len(good_apo))
-print(f"APOGEE - CLEAN APOGEE = {len(dr17)-len(good_apo)} removed")
+# print(len(dr17), len(good_apo))
+# print(f"APOGEE - CLEAN APOGEE = {len(dr17)-len(good_apo)} removed")
+
+with fits.open('./catalogs/halo_subs_Horta.fits') as hdul:
+    # hdul.info()
+    horta_halos = hdul[1].data
+
+# print(np.unique(horta_halos['name']))
+
+apo_ind = []
+halo_ind = []
+
+for i, halostar in enumerate(horta_halos['APOGEE_ID']):
+    star_id = np.where(good_apo['APOGEE_ID']==halostar)[0]
+    if len(star_id) > 0:
+        apo_ind.append(star_id[0])
+        halo_ind.append(i)
+
+print(len(apo_ind),len(halo_ind))
+
+substruc_names = np.core.records.fromarrays([horta_halos[halo_ind]['name']],names='SUB_NAME')
+
+horta_subhalo = rec.merge_arrays([dr17[apo_ind],substruc_names],flatten=True)
+print(len(horta_subhalo))
+
+hdu = fits.PrimaryHDU(horta_subhalo)
+# hdulist = fits.HDUList([hdu])
+hdu.writeto('./catalogs/horta_stars_dr17.fits')
+
+#print(horta_subhalo)
+
