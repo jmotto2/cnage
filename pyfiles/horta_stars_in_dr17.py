@@ -5,12 +5,6 @@ from astropy.coordinates import SkyCoord
 from astropy import units as u
 import numpy as np
 import numpy.lib.recfunctions as rec
-from matplotlib import pyplot as plt
-import scipy
-import scipy.optimize as opt
-import scipy.stats as stat
-import scipy.odr as odr
-from scipy.stats import pearsonr
 import os
 
 # read in the dr17 file
@@ -67,9 +61,10 @@ substruc_names = np.core.records.fromarrays([horta_halos[halo_ind]['name']],name
 horta_subhalo = rec.merge_arrays([dr17[apo_ind],substruc_names],flatten=True)
 print(len(horta_subhalo))
 
-hdu = fits.PrimaryHDU(horta_subhalo)
+hdu = fits.BinTableHDU(data=horta_subhalo)
+print(hdu.columns)
 # hdulist = fits.HDUList([hdu])
-hdu.writeto('./catalogs/horta_stars_dr17.fits')
+# hdu.writeto('./catalogs/horta_stars_dr17.fits')
 
 #print(horta_subhalo)
 
