@@ -142,43 +142,62 @@ thamnos = []
 thamages = []
 thamfeh= []
 
+arjcnr = []
+gescnr = []
+helcnr = []
+hercnr = []
+nyxcnr = []
+sagcnr = []
+m19cnr = []
+n20cnr = []
+thamcnr = []
+
 for star in gdstars:
     if star.subname == unisubnames[1]:
         arjuna.append(star)
         arjages.append(star.age)
         arjfeh.append(star.feh)
+        arjcnr.append(star.cnr)
     elif star.subname == unisubnames[2]:
         ges.append(star)
         gesages.append(star.age)
         gesfeh.append(star.feh)
+        gescnr.append(star.cnr)
     elif star.subname == unisubnames[3]:
         helmi.append(star)
         helages.append(star.age)
         helfeh.append(star.feh)
+        helcnr.append(star.cnr)
     elif star.subname == unisubnames[4]:
         heracles.append(star)
         herages.append(star.age)
         herfeh.append(star.feh)
+        hercnr.append(star.cnr)
     elif star.subname == unisubnames[6]:
         nyx.append(star)
         nyxages.append(star.age)
         nyxfeh.append(star.feh)
+        nyxcnr.append(star.cnr)
     elif star.subname == unisubnames[7]:
         sag.append(star)
         sagages.append(star.age)
         sagfeh.append(star.feh)
+        sagcnr.append(star.cnr)
     elif star.subname == unisubnames[9]:
         m19.append(star)
         m19ages.append(star.age)
         m19feh.append(star.feh)
+        m19cnr.append(star.cnr)
     elif star.subname == unisubnames[10]:
         n20.append(star)
         n20ages.append(star.age)
         n20feh.append(star.feh)
+        n20cnr.append(star.cnr)
     elif star.subname == unisubnames[11]:
         thamnos.append(star)
         thamages.append(star.age)
         thamfeh.append(star.feh)
+        thamcnr.append(star.cnr)
 
 # print(len(arjuna),len(arjages))
 # print(len(ges),len(gesages))
@@ -189,6 +208,7 @@ for star in gdstars:
 # print(len(m19))
 # print(len(n20))
 # print(len(thamnos),len(thamages))
+ages_list = [(arjages,arjcnr),(gesages,gesages),(helages,helcnr),(herages,hercnr),(nyxages,nyxcnr),(sagages,sagcnr),(m19ages,m19cnr),(n20ages,n20cnr),(thamages,thamcnr)]
 
 
 fig, ((ax1,ax2,ax3),(ax4,ax5,ax6),(ax7,ax8,ax9)) = plt.subplots(3,3)
@@ -320,4 +340,30 @@ ax9.set_title('Thamnos',fontsize=30)
 
 
 fig1.savefig('./plots/comb/age_feh.pdf',format='pdf',bbox_inches='tight',pad_inches=.05)
+
+
+
+names = ['Arjuna','GES','HelmiStream','Heracles','Nyx','Sagittarius','Sequoia(M19)','Sequoia(N20)','Thamnos']
+
+for stream,name in zip(ages_list,names):
+    stream_arr = np.array(stream)
+    nans = np.isnan(stream_arr[0])
+    avg = np.average(stream_arr[0][~nans])
+    med = np.median(stream_arr[0][~nans])
+    std = np.std(stream_arr[0][~nans])
+    nanscnr = np.isnan(stream_arr[1])
+    cnravg = np.average(stream_arr[1][~nanscnr])
+    medcnr = np.median(stream_arr[1][~nanscnr])
+    stdcnr = np.std(stream_arr[1][~nanscnr])
+    print(name+' Age:')
+    print('~~~~~'*4)
+    print('Median: ',np.round(med,2))
+    print('Average: ',np.round(avg,2))
+    print('Standard Deviation: ',np.round(std,2))
+    print('~~~~~'*4)
+    print(name+' [C \ N]:')
+    print('Median: ',np.round(medcnr,2))
+    print('Average: ',np.round(cnravg,2))
+    print('Standard Deviation: ',np.round(stdcnr,2))
+    print('~~~~~'*4)
 
