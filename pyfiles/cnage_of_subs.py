@@ -12,8 +12,13 @@ allstars = fitsio.read('./catalogs/horta_stars_dr17.fits')
 # print(max(allstars['LOGG']),min(allstars['LOGG']))
 # print(max(allstars['FE_H']),min(allstars['FE_H']))
 
-fehlim = np.where(allstars['FE_H']>-1.2)[0]
+# names = ['Aleph','Arjuna','GES','HelmiStream','Heracles','Nyx','Sagittarius','Sequoia(M19)','Sequoia(N20)','Thamnos','Iitoi']
+# fehlim = np.where(allstars['FE_H']>-1.5)[0]
+# fehlimstars = allstars[fehlim]
 # print(len(fehlim))
+# for name in names:
+#     numstars = np.where(fehlimstars['SUB_NAME']==name)[0]
+#     print(name,len(numstars))
 
 usable = np.where((allstars['FE_H']>-1.2) & (allstars['FE_H']<.3) & (allstars['LOGG']>2.14) & (allstars['LOGG']<3.1))[0]
 # print(len(usable))
@@ -66,10 +71,11 @@ for row in gdstars:
     star.get_age()
     # print(star.subname,star._cnr,star._age)
     stars.append(star)
+    # print(star.subname)
 
 gdstars = []
 for star in stars:
-    if star.age is not np.isreal(star.age):
+    if star.age is not np.isnan(star.age):
         gdstars.append(star)
 
 subnames = []
@@ -208,48 +214,91 @@ for star in gdstars:
 # print(len(m19))
 # print(len(n20))
 # print(len(thamnos),len(thamages))
-ages_list = [(arjages,arjcnr),(gesages,gesages),(helages,helcnr),(herages,hercnr),(nyxages,nyxcnr),(sagages,sagcnr),(m19ages,m19cnr),(n20ages,n20cnr),(thamages,thamcnr)]
+ages_list = [(arjages,arjcnr),(gesages,gescnr),(helages,helcnr),(herages,hercnr),(nyxages,nyxcnr),(sagages,sagcnr),(m19ages,m19cnr),(n20ages,n20cnr),(thamages,thamcnr)]
+
+edges = np.linspace(7,12,21)
+# print(edges)
+# counts,bins = np.histogram(arjages,edges,[7.,12.])
+# plt.stairs(counts,bins,color='forestgreen',fill=True)
+# plt.savefig('./plots/stairs_test.pdf')
 
 
-fig, ((ax1,ax2,ax3),(ax4,ax5,ax6),(ax7,ax8,ax9)) = plt.subplots(3,3)
+clist,blist = [],[]
+for item in ages_list:
+    counts,bins = np.histogram(item[0],edges,[7.,12.])
+    clist.append(counts)
+    blist.append(bins)
+
+fig, ((ax1,ax2,ax3),(ax4,ax5,ax6),(ax7,ax8,ax9)) = plt.subplots(3,3,sharex='row')
 fig.set_size_inches(21,16)
 # fig, ((ax1,ax2,ax3)) = plt.subplots(1,3)
 # fig.suptitle('Distribution of Ages by Sub-structure',fontsize=30)
-ax1.hist(arjages,color='forestgreen')
+# fig.supxlabel('log(age(yr))')
+# fig.supylabel('Count')
+
+# ax1.hist(arjages,color='forestgreen')
+ax1.stairs(clist[0],blist[0],color='forestgreen',fill=True)
 ax1.set_title('Arjuna',fontsize=24)
 ax1.tick_params(axis='both',labelsize=18)
+ax1.vlines(10.24,-2,300,linestyles='dashed',color='black',label='log(age) of Universe')
+ax1.set_ylim(0,8.5)
+ax1.legend(loc='upper left',fontsize=18)
 
-ax2.hist(gesages,color='cornflowerblue')
+# ax2.hist(gesages,color='cornflowerblue')
+ax2.stairs(clist[1],blist[1],color='cornflowerblue',fill=True)
 ax2.set_title('GES',fontsize=24)
 ax2.tick_params(axis='both',labelsize=18)
+ax2.vlines(10.24,-2,300,linestyles='dashed',color='black')
+ax2.set_ylim(0,175)
 
-ax3.hist(helages,color='firebrick')
+# ax3.hist(helages,color='firebrick')
+ax3.stairs(clist[2],blist[2],color='firebrick',fill=True)
 ax3.set_title('HelmiStream',fontsize=24)
 ax3.tick_params(axis='both',labelsize=18)
+ax3.vlines(10.24,-2,300,linestyles='dashed',color='black')
+ax3.set_ylim(0,8.5)
 
-ax4.hist(herages,color='darkorchid')
+# ax4.hist(herages,color='darkorchid')
+ax4.stairs(clist[3],blist[3],color='darkorchid',fill=True)
 ax4.set_title('Heracles',fontsize=24)
 ax4.tick_params(axis='both',labelsize=18)
+ax4.vlines(10.24,-2,300,linestyles='dashed',color='black')
+ax4.set_ylim(0,27.5)
 
-ax5.hist(nyxages,color='pink')
+# ax5.hist(nyxages,color='pink')
+ax5.stairs(clist[4],blist[4],color='pink',fill = True)
 ax5.set_title('Nyx',fontsize=24)
 ax5.tick_params(axis='both',labelsize=18)
+ax5.vlines(10.24,-2,300,linestyles='dashed',color='black')
+ax5.set_ylim(0,44.5)
 
-ax6.hist(sagages,color='goldenrod')
+# ax6.hist(sagages,color='goldenrod')
+ax6.stairs(clist[5],blist[5],color='goldenrod',fill=True)
 ax6.set_title('Sagittarius',fontsize=24)
 ax6.tick_params(axis='both',labelsize=18)
+ax6.vlines(10.24,-2,300,linestyles='dashed',color='black')
+ax6.set_ylim(0,8.5) 
 
-ax7.hist(m19ages,color='peru')
+# ax7.hist(m19ages,color='peru')
+ax7.stairs(clist[6],blist[6],color='peru',fill=True)
 ax7.set_title('Sequoia(M19)',fontsize=24)
 ax7.tick_params(axis='both',labelsize=18)
+ax7.vlines(10.24,-2,300,linestyles='dashed',color='black')
+ax7.set_ylim(0,9.5)
 
-ax8.hist(n20ages,color='teal')
+# ax8.hist(n20ages,color='teal')
+ax8.stairs(clist[7],blist[7],color='teal',fill=True)
 ax8.set_title('Sequoia(N20)',fontsize=24)
 ax8.tick_params(axis='both',labelsize=18)
+ax8.vlines(10.24,-2,300,linestyles='dashed',color='black')
+ax8.set_ylim(0,8.5)
 
-ax9.hist(thamages,color='slategrey')
+# ax9.hist(thamages,color='slategrey')
+ax9.stairs(clist[8],blist[8],color='slategrey',fill=True)
 ax9.set_title('Thamnos',fontsize=24)
 ax9.tick_params(axis='both',labelsize=18)
+ax9.vlines(10.24,-2,300,linestyles='dashed',color='black')
+ax9.set_ylim(0,12.5)
 
 fig.savefig('./plots/comb/comb_hist.pdf',format='pdf',bbox_inches='tight',pad_inches=.05)
 
