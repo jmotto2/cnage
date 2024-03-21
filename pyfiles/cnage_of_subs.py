@@ -59,8 +59,8 @@ class RGiant(object):
         return self.cnr
         
     def get_age(self):
-        m = 2.412
-        b = 10.204
+        m = 2.41
+        b = 10.20
         self.age = m * self.cnr + b
         return self.age
         
@@ -69,7 +69,7 @@ for row in gdstars:
     star = RGiant(row=row)
     star.get_cnr()
     star.get_age()
-    # print(star.subname,star._cnr,star._age)
+    # print(star.subname,star.cnr,star.age)
     stars.append(star)
     # print(star.subname)
 
@@ -410,7 +410,7 @@ for stream,name in zip(ages_list,names):
     print('Average: ',np.round(avg,2))
     print('Standard Deviation: ',np.round(std,2))
     print('~~~~~'*4)
-    print(name+' [C \ N]:')
+    print(name+' [C / N]:')
     print('Median: ',np.round(medcnr,2))
     print('Average: ',np.round(cnravg,2))
     print('Standard Deviation: ',np.round(stdcnr,2))
